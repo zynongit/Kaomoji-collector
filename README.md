@@ -1,1 +1,1 @@
-# Kaomoji-collector
+# Kaomoji Collector
