@@ -1,1 +1,53 @@
+name: Deploy Kaomoji Collector
 
+on:
+  push:
+    branches: [ "main" ]  # Dispara no push para a branch main
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Baixa o código
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Configura Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'  # Versão do Node.js
+          cache: 'npm'
+
+      # 3. Instala dependências
+      - name: Install dependencies
+        run: npm install
+
+      # 4. Roda testes (opcional)
+      - name: Run tests
+        run: npm test  # Se você tiver testes (Jest/Mocha)
+
+      # 5. Faz deploy (usando Vercel, AWS, ou outro)
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v30
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}  # Token da Vercel
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          scope: your-vercel-scope
+
+      # --- Ou para deploy em servidor próprio ---
+      - name: Deploy via SSH (opcional)
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd /path/to/your/app
+            git pull origin main
+            npm install
+            pm2 restart kaomoji-collector
