@@ -1,1 +1,21 @@
+# Configuração do bot coletor de kaomojis
+name: "Coletor de Kaomoji"
 
+# Escuta comentários em issues/pull requests
+on:
+  issue_comment:
+    types: [created]
+
+# Comandos que o bot reconhece
+commands:
+  - name: "!kaomoji add"
+    description: "Adiciona um novo kaomoji à coleção"
+    action: "src/actions/addKaomoji.js"  # Arquivo que processa o comando
+  - name: "!kaomoji list"
+    description: "Mostra todos os kaomojis salvos"
+    action: "src/actions/listKaomoji.js"
+
+# Permissões necessárias (editar comentários, etc.)
+permissions:
+  issues: write
+  pull_requests: write
